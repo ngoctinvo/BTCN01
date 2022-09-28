@@ -99,7 +99,8 @@ const App = () => {
 
     const handleClick = (i, row, col) => {
         const choosenHistory = isAscMoves ?
-            history.slice(0, stepNumber + 1) : [...history].reverse().slice(0, stepNumber + 1);
+            history.slice(0, stepNumber + 1) :
+            [...history].reverse().slice(0, stepNumber + 1);
 
         const current = choosenHistory[choosenHistory.length - 1];
         const choosenSquares = current.squares.map((square) => ({...square }));
@@ -161,11 +162,10 @@ const App = () => {
         <
         Board current = { current }
         handleClick = {
-            (i, row, col) => handleClick(i, row, col)
-        }
+            (i, row, col) => handleClick(i, row, col) }
         size = { size }
-        /> < /
-        div > <
+        />{" "} <
+        /div>{" "} <
         div className = "game-info" >
         <
         div >
@@ -178,49 +178,47 @@ const App = () => {
             }
         } >
         <
-        option value = "3" > 3 < /option> <
-        option value = "5" > 5 < /option> < /
-        select > <
-        /div> <
-        span > Sắp xếp theo: < /span> <
+        option value = "3" > 3 < /option> <option value="5"> 5 </option > { " " } <
+        /select>{" "} <
+        /div>{" "} <
+        span > Sắp xếp theo: < /span>{" "} <
         button onClick = {
             () => {
                 setIsAscMoves(!isAscMoves);
             }
-        } > { isAscMoves ? "Tăng dần" : "Giảm dần" } <
-        /button> <
+        } >
+        { " " } { isAscMoves ? "Tăng dần" : "Giảm dần" } { " " } <
+        /button>{" "} <
         div >
         <
-        b > { status } < /b> < /
-        div >
-
-        <
-        ul > {
+        b > { status } < /b>{" "} <
+        /div> <
+        ul > { " " } {
             history
-            .sort((h1, h2) =>
-                isAscMoves ? h1.step - h2.step : h2.step - h1.step
-            )
-            .map((his, index) => {
-                const desc = his.step ?
-                    "Bước " +
-                    `#${his.step}` +
-                    ` (${his.activeCol}, ${his.activeRow})` :
-                    "Bắt đầu";
+                .sort((h1, h2) =>
+                    isAscMoves ? h1.step - h2.step : h2.step - h1.step
+                )
+                .map((his, index) => {
+                    const desc = his.step ?
+                        "Bước " +
+                        `#${his.step}` +
+                        ` (${his.activeCol}, ${his.activeRow})` :
+                        "Bắt đầu";
 
-                return ( <
-                    li key = { his.step } >
-                    <
-                    button onClick = {
-                        () => jumpTo(his.step)
-                    }
-                    className = { stepNumber === his.step ? "active" : "" } > { desc } <
-                    /button> < /
-                    li >
-                );
-            })
-        } <
-        /ul> < /
-        div > <
+                    return ( <
+                        li key = { his.step } >
+                        <
+                        button onClick = {
+                            () => jumpTo(his.step) }
+                        className = { stepNumber === his.step ? "active" : "" } >
+                        { " " } { desc } { " " } <
+                        /button>{" "} <
+                        /li>
+                    );
+                })
+        } { " " } <
+        /ul>{" "} <
+        /div>{" "} <
         /div>
     );
 };
