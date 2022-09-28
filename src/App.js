@@ -178,12 +178,18 @@ const App = () => {
             onChange={(e) => {
               setSize(+e.target.value);
             }}
+            style={{ width: "50px", height: "25px" }}
           >
             <option value="3"> 3 </option> <option value="5"> 5 </option>{" "}
           </select>{" "}
         </div>{" "}
         <span> Sắp xếp theo: </span>{" "}
         <button
+          style={{
+            width: "100px",
+            height: "25px",
+            border: "1px solid gray",
+          }}
           onClick={() => {
             setIsAscMoves(!isAscMoves);
           }}
@@ -210,6 +216,11 @@ const App = () => {
               return (
                 <li key={his.step}>
                   <button
+                    style={{
+                      width: "300px",
+                      height: "25px",
+                      border: "1px solid gray",
+                    }}
                     onClick={() => jumpTo(his.step)}
                     className={stepNumber === his.step ? "active" : ""}
                   >
