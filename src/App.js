@@ -209,7 +209,7 @@ const App = () => {
             .map((his, index) => {
               const desc = his.step
                 ? "Bước " +
-                  `#${his.step}` +
+                  `#${his.step} : ` +
                   ` (${his.activeCol}, ${his.activeRow})`
                 : "Bắt đầu";
 
