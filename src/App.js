@@ -2,236 +2,226 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Board from "./components/Board";
 
+const gameLines = {
+  3: [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ],
+  5: [
+    [0, 1, 2, 3, 4],
+    [5, 6, 7, 8, 9],
+    [10, 11, 12, 13, 14],
+    [15, 16, 17, 18, 19],
+    [20, 21, 22, 23, 24],
+    [0, 5, 10, 15, 20],
+    [1, 6, 11, 16, 21],
+    [2, 7, 12, 17, 22],
+    [3, 8, 13, 18, 23],
+    [4, 9, 14, 19, 24],
+    [0, 6, 12, 18, 24],
+    [4, 8, 12, 16, 20],
+  ],
+};
+
+const calWinner = (squares) => {
+  if (squares.every((square) => square.value)) return "NOPE";
+  const lines = gameLines[Math.sqrt(squares.length)];
+  if (Math.sqrt(squares.length) === 3) {
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (
+        squares[a].value &&
+        squares[a].value === squares[b].value &&
+        squares[a].value === squares[c].value
+      ) {
+        squares[a].isCauseWin = true;
+        squares[b].isCauseWin = true;
+        squares[c].isCauseWin = true;
+        return squares[a].value;
+      }
+    }
+  }
+
+  if (Math.sqrt(squares.length) === 5) {
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c, d, e] = lines[i];
+      if (
+        squares[a].value &&
+        squares[a].value === squares[b].value &&
+        squares[a].value === squares[c].value &&
+        squares[a].value === squares[d].value &&
+        squares[a].value === squares[e].value
+      ) {
+        for (const index of lines[i]) {
+          squares[index].isCauseWin = true;
+        }
+        return squares[a].value;
+      }
+    }
+  }
+  return null;
+};
+
+const createSquares = (size) => {
+  const squares = [];
+  for (let i = 0; i < size; i++)
+    for (let j = 0; j < size; j++)
+      squares.push({
+        value: null,
+        row: i,
+        col: j,
+        isCauseWin: false,
+      });
+
+  return squares;
+};
+
 const App = () => {
-  const initSquares = (size) => {
-    const squares = [];
-
-    for (let i = 0; i < size; i++)
-      for (let j = 0; j < size; j++)
-        squares.push({
-          value: null,
-          row: i,
-          col: j,
-          isCauseWin: false,
-        });
-
-    return squares;
-  };
-
-  const [stepNumber, setStepNumber] = useState(0);
+  const [step, setStep] = useState(0);
   const [xIsNext, setXIsNext] = useState(true);
-  const [isAscMoves, setIsAscMoves] = useState(true);
-
+  const [isAsc, setIsAsc] = useState(true);
   const [size, setSize] = useState(3);
-
   const [history, setHistory] = useState([
     {
-      squares: initSquares(3),
+      squares: createSquares(3),
       step: 0,
-      activeRow: null,
-      activeCol: null,
+      currentRow: null,
+      currentCol: null,
     },
   ]);
+  const onClickEvent = (i, row, col) => {
+    const selectedStep = isAsc
+      ? history.slice(0, step + 1)
+      : [...history].reverse().slice(0, step + 1);
 
-  const calculateWinner = (squares) => {
-    if (squares.every((square) => square.value)) return "DRAW";
+    const currentStep = selectedStep[selectedStep.length - 1];
+    const selectedSquare = currentStep.squares.map((square) => ({ ...square }));
 
-    // Hardcode for 3 consecutive squares
-    if (squares.length === 9) {
-      const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-      ];
-      for (let i = 0; i < lines.length; i++) {
-        const [a, b, c] = lines[i];
-        if (
-          squares[a].value &&
-          squares[a].value === squares[b].value &&
-          squares[a].value === squares[c].value
-        ) {
-          squares[a].isCauseWin = true;
-          squares[b].isCauseWin = true;
-          squares[c].isCauseWin = true;
-          return squares[a].value;
-        }
-      }
-    }
-
-    // Hardcode for 5 consecutive squares
-    if (squares.length === 25) {
-      const lines = [
-        [0, 1, 2, 3, 4],
-        [5, 6, 7, 8, 9],
-        [10, 11, 12, 13, 14],
-        [15, 16, 17, 18, 19],
-        [20, 21, 22, 23, 24],
-        [0, 5, 10, 15, 20],
-        [1, 6, 11, 16, 21],
-        [2, 7, 12, 17, 22],
-        [3, 8, 13, 18, 23],
-        [4, 9, 14, 19, 24],
-        [0, 6, 12, 18, 24],
-        [4, 8, 12, 16, 20],
-      ];
-      for (let i = 0; i < lines.length; i++) {
-        const [a, b, c, d, e] = lines[i];
-        if (
-          squares[a].value &&
-          squares[a].value === squares[b].value &&
-          squares[a].value === squares[c].value &&
-          squares[a].value === squares[d].value &&
-          squares[a].value === squares[e].value
-        ) {
-          for (const index of lines[i]) {
-            squares[index].isCauseWin = true;
-          }
-          return squares[a].value;
-        }
-      }
-    }
-
-    return null;
-  };
-
-  const handleClick = (i, row, col) => {
-    const choosenHistory = isAscMoves
-      ? history.slice(0, stepNumber + 1)
-      : [...history].reverse().slice(0, stepNumber + 1);
-
-    const current = choosenHistory[choosenHistory.length - 1];
-    const choosenSquares = current.squares.map((square) => ({ ...square }));
-
-    if (calculateWinner(choosenSquares) || choosenSquares[i].value) {
+    if (calWinner(selectedSquare) || selectedSquare[i].value) {
       return;
     }
 
-    if (!choosenSquares[i].value) {
-      choosenSquares[i].value = xIsNext ? "X" : "O";
+    if (!selectedSquare[i].value) {
+      selectedSquare[i].value = xIsNext ? "X" : "O";
       setHistory(
-        choosenHistory.concat([
+        selectedStep.concat([
           {
-            squares: choosenSquares,
-            step: choosenHistory.length,
-            activeRow: row,
-            activeCol: col,
+            squares: selectedSquare,
+            step: selectedStep.length,
+            currentRow: row,
+            currentCol: col,
           },
         ])
       );
-      setStepNumber(choosenHistory.length);
+      setStep(selectedStep.length);
       setXIsNext(!xIsNext);
     }
   };
 
   const jumpTo = (step) => {
-    setStepNumber(step);
+    setStep(step);
     setXIsNext(step % 2 === 0);
   };
-
-  const current =
-    history[isAscMoves ? stepNumber : history.length - stepNumber - 1];
-
-  const winner = calculateWinner(current.squares);
-
+  const currentStep = history[isAsc ? step : history.length - step - 1];
+  const winner = calWinner(currentStep.squares);
   let status;
-
-  if (winner === "DRAW") status = "X và O hòa nhau";
+  if (winner === "NOPE") status = "Kết thúc! X và O hòa nhau.";
   else if (winner) {
-    status = "Người chiến thắng: " + winner;
+    status = "Kết thúc! Người chiến thắng: " + winner;
   } else {
     status = "Người chơi tiếp theo: " + (xIsNext ? "X" : "O");
   }
-
   useEffect(() => {
     setHistory([
       {
-        squares: initSquares(size),
+        squares: createSquares(size),
         step: 0,
-        activeRow: null,
-        activeCol: null,
+        currentRow: null,
+        currentCol: null,
       },
     ]);
-    setStepNumber(0);
+    setStep(0);
     setXIsNext(true);
-    setIsAscMoves(true);
+    setIsAsc(true);
   }, [size]);
 
   return (
-    <div className="game">
-      <div className="game-board">
+    <div className="container">
+      <div className="boardContainer">
         <Board
-          current={current}
-          handleClick={(i, row, col) => handleClick(i, row, col)}
+          current={currentStep}
+          onClick={(i, row, col) => onClickEvent(i, row, col)}
           size={size}
-        />{" "}
-      </div>{" "}
-      <div className="game-info">
+        />
+      </div>
+      <div className="infoContainer">
         <div>
-          Chọn kích thước:
-          <select
-            name="size"
-            onChange={(e) => {
-              setSize(+e.target.value);
+          <div>
+            Chọn kích thước:
+            <select
+              name="size"
+              onChange={(e) => {
+                setSize(+e.target.value);
+              }}
+              style={{ width: "50px", height: "25px" }}
+            >
+              <option value="3"> 3 </option> <option value="5"> 5 </option>{" "}
+            </select>
+          </div>
+          <span> Sắp xếp theo: </span>
+          <button
+            style={{
+              width: "100px",
+              height: "25px",
+              border: "1px solid gray",
             }}
-            style={{ width: "50px", height: "25px" }}
+            onClick={() => {
+              setIsAsc(!isAsc);
+            }}
           >
-            <option value="3"> 3 </option> <option value="5"> 5 </option>{" "}
-          </select>{" "}
-        </div>{" "}
-        <span> Sắp xếp theo: </span>{" "}
-        <button
-          style={{
-            width: "100px",
-            height: "25px",
-            border: "1px solid gray",
-          }}
-          onClick={() => {
-            setIsAscMoves(!isAscMoves);
-          }}
-        >
-          {" "}
-          {isAscMoves ? "Tăng dần" : "Giảm dần"}{" "}
-        </button>{" "}
-        <div>
-          <b> {status} </b>{" "}
+            {isAsc ? "Tăng dần" : "Giảm dần"}
+          </button>
+          <div>
+            <b> {status} </b>
+          </div>
         </div>
-        <ul>
-          {" "}
-          {history
-            .sort((h1, h2) =>
-              isAscMoves ? h1.step - h2.step : h2.step - h1.step
-            )
-            .map((his, index) => {
-              const desc = his.step
-                ? "Bước " +
-                  `#${his.step} : ` +
-                  ` (${his.activeCol}, ${his.activeRow})`
-                : "Bắt đầu";
+        <div>
+          <h3 style={{textAlign: "center"}}>Lịch sử</h3>
+          <ul>
+            {history
+              .sort((h1, h2) => (isAsc ? h1.step - h2.step : h2.step - h1.step))
+              .map((his, index) => {
+                const desc = his.step
+                  ? "Bước " +
+                    `#${his.step} : ` +
+                    ` (${his.currentCol}, ${his.currentRow})`
+                  : "Bắt đầu";
 
-              return (
-                <li key={his.step}>
-                  <button
-                    style={{
-                      width: "300px",
-                      height: "25px",
-                      border: "1px solid gray",
-                    }}
-                    onClick={() => jumpTo(his.step)}
-                    className={stepNumber === his.step ? "active" : ""}
-                  >
-                    {" "}
-                    {desc}{" "}
-                  </button>{" "}
-                </li>
-              );
-            })}{" "}
-        </ul>{" "}
-      </div>{" "}
+                return (
+                  <li key={his.step}>
+                    <button
+                      style={{
+                        width: "300px",
+                        height: "25px",
+                        border: "1px solid gray",
+                      }}
+                      onClick={() => jumpTo(his.step)}
+                      className={step === his.step ? "active" : ""}
+                    >
+                      {desc}
+                    </button>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

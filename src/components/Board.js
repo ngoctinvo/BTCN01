@@ -1,7 +1,7 @@
 import React from "react";
 import Square from "./Square";
 
-const Board = ({ current, handleClick, size }) => {
+const Board = ({ current, onClick, size }) => {
     const { activeRow, activeCol, squares } = current;
 
     const renderSquare = (i) => {
@@ -14,7 +14,7 @@ const Board = ({ current, handleClick, size }) => {
                         squares[i].isCauseWin
                     }
                     square={squares[i]}
-                    onClick={() => handleClick(i, row, col)}
+                    onClick={() => onClick(i, row, col)}
                     key={`square-${row}-${col}`}
                 />
             );
@@ -24,7 +24,7 @@ const Board = ({ current, handleClick, size }) => {
     return (
         <div>
             {[...Array(size).keys()].map((row) => (
-                <div className="board-row" key={`board-row-${row}`}>
+                <div className="boardRow" key={`boardRow-${row}`}>
                     {[...Array(size).keys()].map((col) =>
                         renderSquare(row * size + col)
                     )}

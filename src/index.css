@@ -1,6 +1,6 @@
 body {
     font-size: 20px;
-    margin-left: 20%;
+    margin-left: 15%;
     margin-top: 10%;
     line-height: 30px;
     font-family: 'Courier New', Courier, monospace;
@@ -28,7 +28,11 @@ li button.active {
     background-color: pink;
 }
 
-.board-row:after {
+.boardContainer {
+    height: 100vh;
+}
+
+.boardRow::after {
     clear: both;
     content: "";
     display: table;
@@ -42,15 +46,15 @@ li button.active {
     background: white;
     border: 1px solid gray;
     float: left;
-    font-size: 24px;
+    font-size: 48px;
     font-weight: bold;
-    line-height: 36px;
-    height: 36px;
+    line-height: 64px;
+    height: 64px;
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 36px;
+    width: 64px;
 }
 
 .square.active {
@@ -60,17 +64,18 @@ li button.active {
 
 .square:focus {
     outline: none;
-}
-
-.kbd-navigation .square:focus {
     background: pink;
 }
 
-.game {
+.container {
     display: flex;
     flex-direction: row;
+    gap: 80px;
 }
 
-.game-info {
+.infoContainer {
     margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
 }
