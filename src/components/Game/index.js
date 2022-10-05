@@ -54,7 +54,7 @@ const Controller = styled.div({
   alignItems: "start",
   border: "2px solid pink",
   height: "250px",
-  width: "200px",
+  width: "300px",
 });
 
 const SortSelection = styled.div({
