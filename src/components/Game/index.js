@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../App.css";
 import Board from "../Board";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const Container = styled.div({
   marginTop:"20px",
@@ -31,6 +31,7 @@ const RestartButton = styled.button({
     cursor: "pointer",
   },
 });
+
 const BoardContainer = styled.div({
    position:"relative",
    
@@ -54,9 +55,8 @@ const Controller = styled.div({
   border: "2px solid pink",
   height: "250px",
   width: "200px",
- 
-
 });
+
 const SortSelection = styled.div({
   display: "flex",
   alignItems: "baseline",
@@ -65,6 +65,7 @@ const SortSelection = styled.div({
     display: "block",
   }
 });
+
 const HistoryContent = styled.div({
   display: "flex",
   flexDirection: "row",
@@ -73,8 +74,10 @@ const HistoryContent = styled.div({
 });
 
 const Status = styled.div({
-  height: "32px"
+  height: "32px",
+  color: "red",
 });
+
 const History = styled.div({
   borderRadius:"10px",
   border: "2px solid pink",
@@ -83,22 +86,22 @@ const History = styled.div({
   flexDirection: "column",
   flexWrap:"nowrap",
   alignItems: "start",
-  height: "250px",
+  minHeight: "250px",
   width: "500px",
-
-
 });
+
 const Title = styled.h3({
   margin: 0,
   fontSize: "32px",
   fontWeight: 700,
   color: "#b40779",
 });
+
 const Button = styled.button({
   backgroundColor: "#fe95b7",
   fontWeight: 600,
   fontSize: "14px",
-  height: "32px",
+  height: "24px",
   border: "1px solid #fe608d",
   borderRadius: "4px",
   marginRight: "8px",
@@ -110,7 +113,7 @@ const Button = styled.button({
 
 const SizeSelection = styled.div({
   select: {
-    height: "32px",
+    height: "24px",
     width: "60px",
     marginLeft: "8px"
   },
@@ -203,6 +206,7 @@ const createSquares = (size) => {
 };
 
 const Game = () => {
+  const sizeList = [3,5];
   const [step, setStep] = useState(0);
   const [xIsNext, setXIsNext] = useState(true);
   const [isAsc, setIsAsc] = useState(true);
@@ -297,9 +301,9 @@ const Game = () => {
           onClick={(i, row, col) => onClickEvent(i, row, col)}
           size={size}
         />
-       {
-        isEnd && (<RestartButton onClick={clear}>Chơi lại</RestartButton>) 
-       } 
+       
+        <RestartButton onClick={clear}>Chơi lại</RestartButton>
+       
       </BoardContainer>
       <InfoContainer>
         <Controller>
@@ -308,19 +312,17 @@ const Game = () => {
             Chọn kích thước:
             <select
               name="size"
-              onChange={(e) => {
-                setSize(+e.target.value);
-              }}
+              onChange={(e) => setSize(+e.target.value)}
             >
-              <option value="3"> 3 </option> <option value="5"> 5 </option>
+              {
+                sizeList.map(size => (<option value={size}>{size}</option>))
+              }
             </select>
           </SizeSelection>
-          <SortSelection>
+          <SortSelection>            
             <span> Sắp xếp theo: </span>
             <Button
-              onClick={() => {
-                setIsAsc(!isAsc);
-              }}
+              onClick={() => setIsAsc(!isAsc)}
             >
               {isAsc ? "Tăng dần" : "Giảm dần"}
             </Button>
@@ -335,7 +337,7 @@ const Game = () => {
           <HistoryContent>
             {history
               .sort((h1, h2) => (isAsc ? h1.step - h2.step : h2.step - h1.step))
-              .map((his, index) => {
+              .map((his) => {
                 const desc = his.step
                   ? "Bước " +
                     `#${his.step} : ` +

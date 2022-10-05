@@ -1,7 +1,9 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-const Button = styled.button({
+const Button = styled.button((props) => ({
+  color: props.value === 'X' ? "red" : "green",
+  fontFamily: "cursive",
   background: "white",
   border: "3px solid #ac466f",
   float: "left",
@@ -18,7 +20,7 @@ const Button = styled.button({
   "&:hover": { cursor: "pointer" , background: "pink" },
 
   "&:focus": { outline: "none", background: "pink" },
-});
+}));
 
 const activeClass = css({
   backgroundColor: "pink",
@@ -27,7 +29,7 @@ const activeClass = css({
 
 const Square = ({ value, onClick, isActive }) => {
   return (
-    <Button onClick={onClick} className={isActive? activeClass : null}>
+    <Button onClick={onClick} value={value} className={isActive? activeClass : null}>
       {value}
     </Button>
   );
